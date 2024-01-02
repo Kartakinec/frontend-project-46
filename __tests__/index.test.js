@@ -1,38 +1,32 @@
-import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import path from 'path';
-import genDiff from '../src/index';
-import getParsedData from '../src/parsers';
-import formatDiff from '../src/formatters';
+import path, { dirname } from 'path';
+import fs from 'fs';
+import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-const readFixture = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 
-const formats = ['json', 'yaml', 'yml'];
-const formatters = ['stylish', 'plain', 'json'];
-
-describe.each(formatters)('%s formatter', (formatter) => {
-  formats.forEach((format) => {
-    test(`test with ${format}`, () => {
-      const filepath1 = getFixturePath(`file1.${format}`);
-      const filepath2 = getFixturePath(`file2.${format}`);
-      const expected = readFixture(`expected_${formatter}.txt`);
-      expect(genDiff(filepath1, filepath2, formatter)).toEqual(expected);
-    });
+describe.each([
+  ['stylish', 'result.stylish.txt'], [undefined, 'result.stylish.txt'],
+  ['plain', 'result.plain.txt'], ['json', 'result.json.txt'],
+])('format %s', (format, expected) => {
+  test.each([
+    ['json', 'json'], ['yaml', 'yaml'], ['yml', 'yml'],
+  ])('file extension %s', (extension1, extensoin2) => {
+    const file1 = getFixturePath(`file1.${extension1}`);
+    const file2 = getFixturePath(`file2.${extensoin2}`);
+    const result = fs.readFileSync(getFixturePath(expected), 'utf8');
+    expect(genDiff(file1, file2, format)).toEqual(result);
   });
 });
 
-test('parsing unsupported file format', () => {
-  expect(() => {
-    getParsedData('data', 'exe');
-  }).toThrow(new Error('Unsupported file format: .exe\nSupported file formats: .json .yaml .yml'));
+test('unknown extension', () => {
+  expect(() => genDiff('__fixtures__/result.json.txt', '__fixtures__/result.json.txt'))
+    .toThrow('unknown extension txt');
 });
 
-test('applying wrong format option', () => {
-  expect(() => {
-    formatDiff('data', 'flat');
-  }).toThrow(new Error('Unsupported format - flat. Please select a supported option.'));
+test('wrong format', () => {
+  expect(() => genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'wrongFormat'))
+    .toThrow('Unknown format - wrongFormat!');
 });
