@@ -3,7 +3,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/7f65810d2211cfa5a28e/maintainability)](https://codeclimate.com/github/Kartakinec/frontend-project-46-/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7f65810d2211cfa5a28e/test_coverage)](https://codeclimate.com/github/Kartakinec/frontend-project-46-/test_coverage)
 
-##Description
+## Description
 
 Gendiff is the CLI tool for comparing two different files and show the difference beetween them
 
