@@ -24,6 +24,22 @@ Here is minimum requirements for Node.js
 1) `git clone https://github.com/Kartakinec/frontend-project-46-`
 2) `make link`
 
+## Usage
+ Type that command for help
+  ```
+  gendiff -h
+  ```
+ Run command with paths of files to compare
+
+  ```
+  gendiff <filepath1> <filepath2>
+  ```
+ For specify the output format use `-f` or `--format` option. Default format is `stylish`
+
+  ```
+  gendiff <filepath1> <filepath2> -f [format]
+  ```
+
 ## Examples
 - **plain objects .json**
 https://asciinema.org/a/QKTLEhIAfp9RopJgzYtCo5FVV
